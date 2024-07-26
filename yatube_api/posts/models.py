@@ -47,5 +47,17 @@ class Follow(models.Model):
         User, on_delete=models.CASCADE, related_name='followers'
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='unique_followers'
+            ),
+            models.CheckConstraint(  # Это было интересно, спасибо.
+                check=~models.Q(user=models.F('following')),
+                name='prevent_self_following'
+            ),
+        ]
+
     def __str__(self):
         return f"{self.user.username} follows {self.following.username}"

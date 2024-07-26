@@ -1,12 +1,6 @@
-from djoser.serializers import UserSerializer
 from posts.models import Comment, Follow, Group, Post, User
 from rest_framework import serializers
-
-
-class CustomUserSerializer(UserSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'password')
+from rest_framework.validators import UniqueTogetherValidator
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -43,25 +37,27 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
-        slug_field='username', read_only=True)
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault()
+    )
     following = serializers.SlugRelatedField(
         slug_field='username', queryset=User.objects.all())
 
     class Meta:
         model = Follow
-        fields = ('id', 'user', 'following')
+        fields = ('user', 'following')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=['user', 'following'],
+                message="Вы уже подписаны на этого пользователя."
+            )
+        ]
 
     def validate_following(self, value):
         if self.context['request'].user == value:
             raise serializers.ValidationError(
-                "Нельзя подписаться на самого себя.")
+                "Нельзя подписаться на самого себя."
+            )
         return value
-
-    def validate(self, data):
-        user = self.context['request'].user
-        following = data['following']
-
-        if Follow.objects.filter(user=user, following=following).exists():
-            raise serializers.ValidationError(
-                "Вы уже подписаны на этого пользователя.")
-        return data
