@@ -11,7 +11,7 @@ api_final\napi final\n
 
 1. Клонируйте репозиторий:
     ```bash
-    git clone https://github.com/ваш-репозиторий/api_final.git
+    git clone https://github.com/Beeta-test/api_final_yatube
     ```
 
 2. Перейдите в директорию проекта:
