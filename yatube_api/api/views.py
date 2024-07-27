@@ -7,9 +7,6 @@ from .permissions import IsAuthorOrReadOnly
 from .serializers import (CommentsSerializer, FollowSerializer,
                           GroupSerializer, PostSerializer)
 from posts.models import Group, Post
-# ^^^^Этот импорт не отделять? Он вроде как не с этого приложения,
-# но я его не скачивал, в свою защиту хочу сказать,
-# что я использовал isort, но он мне поставил почему-то модели сверху.
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
