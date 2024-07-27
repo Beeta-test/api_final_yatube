@@ -1,12 +1,15 @@
 from django.shortcuts import get_object_or_404
-from posts.models import Group, Post
-from rest_framework import filters, viewsets, mixins
+from rest_framework import filters, mixins, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (CommentsSerializer, FollowSerializer,
                           GroupSerializer, PostSerializer)
+from posts.models import Group, Post
+# ^^^^Этот импорт не отделять? Он вроде как не с этого приложения,
+# но я его не скачивал, в свою защиту хочу сказать,
+# что я использовал isort, но он мне поставил почему-то модели сверху.
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
